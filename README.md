@@ -23,6 +23,12 @@ ___
 　　　　　　　　　**VOICEROID**  
 ___
 
+## スクリーンショット
+
+　![app_screen_shot](https://user-images.githubusercontent.com/71552320/93706901-a6fba600-fb65-11ea-9451-f93e3d69ccd5.jpg)  
+
+___
+
 ## 導入手順
 
 1. 必要なソフトウェア
