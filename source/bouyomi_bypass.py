@@ -41,12 +41,19 @@ TRAY_ICON = "resources/logo.ico"
 
 _queue = Queue()
 
+
 class MyFrame(wx.Frame):
     """ Main Frame class """
 
     def __init__(self, *args, **kwds):
         # begin wxGlade: MyFrame.__init__
-        kwds["style"] = kwds.get("style", 0) | wx.RESIZE_BORDER | wx.MINIMIZE_BOX | wx.SYSTEM_MENU | wx.CAPTION | wx.CLOSE_BOX | wx.CLIP_CHILDREN
+        kwds["style"] = kwds.get("style", 0)\
+                        | wx.RESIZE_BORDER\
+                        | wx.MINIMIZE_BOX\
+                        | wx.SYSTEM_MENU\
+                        | wx.CAPTION\
+                        | wx.CLOSE_BOX\
+                        | wx.CLIP_CHILDREN
         wx.Frame.__init__(self, *args, **kwds)
         self.SetSize((640, 150))
         self.SetMinSize((480, 150))
@@ -122,14 +129,14 @@ class MyFrame(wx.Frame):
         self.menu = wx.Menu()
         self.create_menu_item(self.menu, "Exit", self.on_exit)
 
-        ini_fullpath = os.path.join(os.getcwd(), INI_FILE)
-        self.setting = ConfigSetting(ini_fullpath)
+        ini_full_path = os.path.join(os.getcwd(), INI_FILE)
+        self.setting = ConfigSetting(ini_full_path)
         self.setting.loadConfig()
         if self.setting.active:
             self.text_ctrl_1.SetValue(self.setting.duck_dir)
             self.text_ctrl_2.SetValue(self.setting.remote_exe)
 
-        self.watch_thread = None    # initialize by None
+        self.watch_thread = None  # initialize by None
 
         self.signal_queue = True
         self.queue_thread = threading.Thread(target=self.queue_watcher)
@@ -148,7 +155,7 @@ class MyFrame(wx.Frame):
     def directory_watcher(self, watch_path):
         """ File Observing controller """
 
-        #print("directory_watcher START")
+        # print("directory_watcher START")
         event_handler = WatchDirectory(watch_path)
         observer = Observer()
         observer.schedule(event_handler, watch_path, recursive=True)
@@ -158,7 +165,7 @@ class MyFrame(wx.Frame):
             while self.signal_dir:
                 time.sleep(1)
                 # print("[dir_watch] "+threading.currentThread().name)
-            
+
             observer.stop()
 
         except KeyboardInterrupt:
@@ -169,26 +176,26 @@ class MyFrame(wx.Frame):
             self.signal_queue = False
             raise e
         finally:
-            #print("directory_watcher END")
+            # print("directory_watcher END")
             observer.join()
-    
+
     def queue_watcher(self):
         """ Queue watching controller """
 
-        #print("queue_watcher START")
+        # print("queue_watcher START")
         try:
             while self.signal_queue:
-                if (_queue.empty()):
+                if _queue.empty():
                     time.sleep(1.3)
                     continue
 
                 new_data_path: str = _queue.get(False)
                 # print(new_data_path + u" をキューから取得しました")
 
-                if (new_data_path.lower().endswith(FILE_EXT)):
+                if new_data_path.lower().endswith(FILE_EXT):
                     pass
                 else:
-                    #print("拡張子が異なるため無視します")
+                    # print("拡張子が異なるため無視します")
                     continue
 
                 if os.path.isfile(new_data_path):
@@ -196,7 +203,7 @@ class MyFrame(wx.Frame):
                         lines = f.readlines()
                         # [0] User name
                         name = lines[0].replace('\n', '')
-                        # [1] User Account (@xxxxx)
+                        # [1] User Account (@abc)
                         account = lines[1].replace('\n', '')
                         # [2+] Tweet text (contain '\n' codes)
                         tweet_text = ''.join(map(str, lines[2:])).replace('\n', "　")
@@ -206,21 +213,20 @@ class MyFrame(wx.Frame):
 
                 time.sleep(1.3)
                 # print("[Queue] "+threading.currentThread().name)
-            
-        
+
         except Exception as e:
-            #print("queue_watcher Exception")
+            # print("queue_watcher Exception")
             wx.MessageBox(u"エラーが発生しました。\nツールを再起動してください。", APP_NAME)
             self.signal_dir = False
             raise e
 
-        #print("queue_watcher END")
-    
+        # print("queue_watcher END")
+
     def send_bouyomi_exe(self, name: str, account: str, tweet: str):
         """ Send to BOUYOMI-CHAN for exe """
 
-        #print("[" + name + "] (" + account + ") : " + tweet + "\n--------")
-        self.bouyomi_exe.speek(tweet)
+        # print("[" + name + "] (" + account + ") : " + tweet + "\n--------")
+        self.bouyomi_exe.speak(tweet)
         return
 
     def on_choose_target_dir(self, event):  # wxGlade: MyFrame.<event_handler>
@@ -232,7 +238,7 @@ class MyFrame(wx.Frame):
             watchPath = self.show_dir_dialog(dpath=path)
         else:
             watchPath = self.show_dir_dialog()
-        
+
         if watchPath is None:
             return
         self.text_ctrl_1.SetValue(watchPath)
@@ -247,11 +253,11 @@ class MyFrame(wx.Frame):
             exePath = self.show_exe_dialog(ddir=defDir, dfile=defFile)
         else:
             exePath = self.show_exe_dialog()
-        
+
         if exePath is None:
             return
         self.text_ctrl_2.SetValue(exePath)
-    
+
     def on_save(self, event):  # wxGlade: MyFrame.<event_handler>
         """ Save """
 
@@ -260,7 +266,7 @@ class MyFrame(wx.Frame):
 
         try:
             self.setting.saveConfig()
-        
+
         except Exception as e:
             wx.MessageBox(u"INIファイルの書き込みに失敗しました\n管理者権限やファイルのロック状態を確認してください。", APP_NAME)
             raise e
@@ -278,7 +284,7 @@ class MyFrame(wx.Frame):
         else:
             if (self.watch_thread.isAlive):
                 self.watch_thread.join()
-        
+
         self.SetTitle(APP_NAME)
         self.btn_chooser.Enable()
         self.btn_command.Enable()
@@ -294,16 +300,16 @@ class MyFrame(wx.Frame):
 
         watchPath = self.text_ctrl_1.GetValue()
         exePath = self.text_ctrl_2.GetValue()
-        if (len(watchPath) == 0 | len(exePath) == 0):
+        if len(watchPath) == 0 | len(exePath) == 0:
             self.btn_chooser.Enable()
             self.btn_command.Enable()
             self.btn_start.Enable()
             return
-        
-        if (self.watch_thread is None):
+
+        if self.watch_thread is None:
             pass
         else:
-            if (self.watch_thread.isAlive):
+            if self.watch_thread.isAlive:
                 self.watch_thread.join()
 
         self.bouyomi_exe = BouyomiExe(exePath)
@@ -313,42 +319,40 @@ class MyFrame(wx.Frame):
 
         self.SetTitle(APP_NAME_RUNNING)
         self.btn_stop.Enable()
-    
+
     def on_close(self, event):
         """ Close [x] """
-        
+
         self.Show(False)
 
-        if (self.show_notice == True):
-            self.show_notice = False    # Once
+        if self.show_notice == True:
+            self.show_notice = False  # Once
         else:
             return
-        
+
         wx.MessageBox(DLG_CLS_MESSAGE, APP_NAME)
 
     def show_dir_dialog(self, dpath=""):
         with wx.DirDialog(
-            self, DLG_DIR_MESSAGE,
-            style=wx.DD_DEFAULT_STYLE
-                | wx.DD_DIR_MUST_EXIST
-                | wx.DD_CHANGE_DIR,
-            defaultPath=dpath) as dialog:
-            
-            if (dialog.ShowModal() == wx.ID_CANCEL):
+                self, DLG_DIR_MESSAGE,
+                style=wx.DD_DEFAULT_STYLE
+                      | wx.DD_DIR_MUST_EXIST
+                      | wx.DD_CHANGE_DIR,
+                defaultPath=dpath) as dialog:
+            if dialog.ShowModal() == wx.ID_CANCEL:
                 return
 
             normalizePath = unicodedata.normalize("NFC", dialog.GetPath())
             return normalizePath
-    
+
     def show_exe_dialog(self, ddir="", dfile=""):
         with wx.FileDialog(
-            self, DLG_FIL_MESSAGE,
-            wildcard=DLG_FIL_FILTER,
-            style=wx.FD_OPEN | wx.FD_FILE_MUST_EXIST,
-            defaultDir=ddir,
-            defaultFile=dfile) as dialog:
-
-            if (dialog.ShowModal() == wx.ID_CANCEL):
+                self, DLG_FIL_MESSAGE,
+                wildcard=DLG_FIL_FILTER,
+                style=wx.FD_OPEN | wx.FD_FILE_MUST_EXIST,
+                defaultDir=ddir,
+                defaultFile=dfile) as dialog:
+            if dialog.ShowModal() == wx.ID_CANCEL:
                 return
 
             normalizePath = unicodedata.normalize("NFC", dialog.GetPath())
@@ -367,22 +371,22 @@ class MyFrame(wx.Frame):
         """ [TaskBarIcon] Right click """
 
         self.tb_icon.PopupMenu(self.menu)
-    
+
     def on_exit(self, event):
         """ [PopupMenu] Exit """
 
         self.signal_dir = False
-        if (self.watch_thread is None):
+        if self.watch_thread is None:
             pass
         else:
-            if (self.watch_thread.isAlive):
+            if self.watch_thread.isAlive:
                 self.watch_thread.join()
 
         self.signal_queue = False
-        if (self.queue_thread is None):
+        if self.queue_thread is None:
             pass
         else:
-            if (self.queue_thread.isAlive):
+            if self.queue_thread.isAlive:
                 self.queue_thread.join()
 
         self.tb_icon.RemoveIcon()
@@ -390,7 +394,8 @@ class MyFrame(wx.Frame):
 
 # end of class MyFrame
 
-class ConfigSetting():
+
+class ConfigSetting:
     SECTION = "PATH"
     KEY_DUCK = "duck_dir"
     KEY_TALK = "remote_exe"
@@ -404,37 +409,37 @@ class ConfigSetting():
     def loadConfig(self):
 
         if not os.path.exists(self.config_file):
-            #print("[Error] Not found config file.")
+            # print("[Error] Not found config file.")
             return
         else:
             self.active = True
-        
+
         config = configparser.SafeConfigParser()
         config.read(self.config_file)
 
         if not self.SECTION in config.sections():
             self.active = False
             return
-        
+
         read_default = config[self.SECTION]
         self.duck_dir = read_default[self.KEY_DUCK].replace("\\\\", "\\")
         self.remote_exe = read_default[self.KEY_TALK].replace("\\\\", "\\")
-    
+
     def saveConfig(self):
         config = configparser.SafeConfigParser()
         if os.path.exists(self.config_file):
             config.read(self.config_file)
-        
+
         if not self.SECTION in config.sections():
             config.add_section(self.SECTION)
-        
+
         if len(self.duck_dir) == 0:
             self.duck_dir = ""
         else:
             self.duck_dir = self.duck_dir.replace("\\", "\\\\")
             pass
-        
-        #print("duck = " + self.duck_dir)
+
+        # print("duck = " + self.duck_dir)
         config.set(self.SECTION, self.KEY_DUCK, self.duck_dir)
 
         if len(self.remote_exe) == 0:
@@ -442,14 +447,15 @@ class ConfigSetting():
         else:
             self.remote_exe = self.remote_exe.replace("\\", "\\\\")
             pass
-        
-        #print("talk = " + self.remote_exe)
+
+        # print("talk = " + self.remote_exe)
         config.set(self.SECTION, self.KEY_TALK, self.remote_exe)
 
         with open(self.config_file, "w") as file_obj:
             config.write(file_obj)
 
 # end of class ConfigSetting
+
 
 class WatchDirectory(FileSystemEventHandler):
     # サブディレクトリ内のファイル追加も検知するため今後の改造内容によっては注意
@@ -460,9 +466,9 @@ class WatchDirectory(FileSystemEventHandler):
 
     def on_created(self, event):
         file_path = event.src_path
-        file_name = os.path.basename(file_path)
+        # file_name = os.path.basename(file_path)
         # print(u"%s が追加されました" % file_name)
-        _queue.put(file_path)       # add queue
+        _queue.put(file_path)  # add queue
 
     def on_moved(self, event):
         pass
@@ -475,17 +481,19 @@ class WatchDirectory(FileSystemEventHandler):
 
 # end of class WatchDirectory
 
+
 class BouyomiExe:
     def __init__(self, exePath):
         self.exePath = exePath
 
-    def speek(self, message):
+    def speak(self, message):
         try:
-            pcor = subprocess.run([repr(self.exePath)[1:-1], "/Talk", message], **subprocess_args(True))
+            subprocess.run([repr(self.exePath)[1:-1], "/Talk", message], **subprocess_args(True))
         except (subprocess.CalledProcessError, IndexError, OSError):
             pass
 
 # end of class BouyomiExe
+
 
 class MyApp(wx.App):
     def OnInit(self):
@@ -496,10 +504,12 @@ class MyApp(wx.App):
 
 # end of class MyApp
 
+
 def resourcePath(filename):
     if hasattr(sys, "_MEIPASS"):
         return os.path.join(sys._MEIPASS, filename)
     return os.path.join(os.path.abspath("."), filename)
+
 
 def subprocess_args(include_stdout=True):
     if hasattr(subprocess, "STARTUPINFO"):
@@ -509,18 +519,19 @@ def subprocess_args(include_stdout=True):
     else:
         si = None
         env = None
-    
+
     if include_stdout:
         ret = {"stdout": subprocess.PIPE}
     else:
         ret = {}
-    
+
     ret.update({"stdin": subprocess.PIPE,
                 "stderr": subprocess.PIPE,
                 "startupinfo": si,
                 "env": env})
     return ret
 
+
 if __name__ == "__main__":
-    app = MyApp(0)
+    app = MyApp(False)
     app.MainLoop()
