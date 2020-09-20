@@ -35,7 +35,7 @@ FILE_EXT = ".ducktxt"
 DUCK_FILE_ENCODING = "utf-8-sig"
 FILE_ENCODING = "utf-8"
 INI_FILE = "config.ini"
-TRAY_TOOLTIP = "test app"
+TRAY_TOOLTIP = u"棒読みちゃんバイパス"
 TRAY_ICON = "resources/logo.ico"
 # https://www.iconspedia.com/icon/sound-recorder-app-icon-43617.html
 
