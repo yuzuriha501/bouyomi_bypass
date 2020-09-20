@@ -1,0 +1,36 @@
+/* Tweet TextArea */
+.js-compose-text, .js-reply-tweetbox {
+  font-feature-settings: "palt" 1;
+  font-family:
+    "Hiragino Kaku Gothic ProN",
+    "Yu Gothic Medium", "游ゴシック Medium",
+    YuGothic,"游ゴシック体",
+    Meiryo,
+    sans-serif
+    !important;
+}
+
+/* Tweet text */
+.tweet-text {
+  font-size: 103%;
+  font-feature-settings: "palt" 1;
+  font-family:
+    "Yu Gothic Medium", "游ゴシック Medium";
+  padding-top: 2px;
+  padding-left: 0px;
+  !important;
+}
+
+/* Columns */
+body {
+  font-weight: lighter;
+  font-feature-settings: "palt" 1;
+  /* for Win10 customize */
+  font-family:
+    "Hiragino Kaku Gothic ProN",
+    /*Arial,*/
+    "Hiragino Sans",
+    Meiryo,
+    sans-serif
+   !important;
+}
