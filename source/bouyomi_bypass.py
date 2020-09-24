@@ -25,7 +25,8 @@ from queue import Queue
 # begin wxGlade: extracode
 # end wxGlade
 
-APP_NAME = u"棒読みちゃんバイパス"
+APP_VER = u"[v1.0.1]"
+APP_NAME = u"棒読みちゃんバイパス" + u" " + APP_VER
 APP_NAME_RUNNING = APP_NAME + u" (監視中)"
 DLG_DIR_MESSAGE = u"フォルダを選択してください"
 DLG_FIL_MESSAGE = u"RemoteTalk.exe ファイルを選択してください"
@@ -127,7 +128,12 @@ class MyFrame(wx.Frame):
         self.tb_icon.SetIcon(self.icon, TRAY_TOOLTIP)
 
         self.menu = wx.Menu()
+        self.create_menu_item(self.menu, "Start", self.on_exec, menu_id=1)
+        self.create_menu_item(self.menu, "Stop", self.on_stop, menu_id=2)
+        self.menu.AppendSeparator()
         self.create_menu_item(self.menu, "Exit", self.on_exit)
+        self.menu.Enable(id=1, enable=True)
+        self.menu.Enable(id=2, enable=False)
 
         ini_full_path = os.path.join(os.getcwd(), INI_FILE)
         self.setting = ConfigSetting(ini_full_path)
@@ -144,10 +150,10 @@ class MyFrame(wx.Frame):
         self.queue_thread.start()
         # end __init__
 
-    def create_menu_item(self, menu, label, func):
+    def create_menu_item(self, menu, label, func, menu_id=-1):
         """ PopUpMenu item creator """
 
-        item = wx.MenuItem(menu, -1, label)
+        item = wx.MenuItem(menu, menu_id, label)
         menu.Bind(wx.EVT_MENU, func, id=item.GetId())
         menu.Append(item)
         return item
@@ -289,6 +295,8 @@ class MyFrame(wx.Frame):
         self.btn_chooser.Enable()
         self.btn_command.Enable()
         self.btn_start.Enable()
+        self.menu.Enable(id=1, enable=True)
+        self.menu.Enable(id=2, enable=False)
 
     def on_exec(self, event):  # wxGlade: MyFrame.<event_handler>
         """ Start """
@@ -319,6 +327,8 @@ class MyFrame(wx.Frame):
 
         self.SetTitle(APP_NAME_RUNNING)
         self.btn_stop.Enable()
+        self.menu.Enable(id=1, enable=False)
+        self.menu.Enable(id=2, enable=True)
 
     def on_close(self, event):
         """ Close [x] """

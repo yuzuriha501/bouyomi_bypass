@@ -1,1 +1,5 @@
 *.spec
+source/config.ini
+source/dist/
+source/build/
+source/__pycache__/
