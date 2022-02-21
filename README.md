@@ -68,7 +68,7 @@ ___
 
     - **【任意】** VOICEROID系ソフトウェア  
         棒読みちゃんに追加するプラグインを利用することで VOICEROID による読み上げが可能  
-        対応ソフトは [Voiceroid Talk Plus](https://ch.nicovideo.jp/Wangdora/blomaga/ar126461) を参照  
+        対応ソフトは [Voiceroid Talk Plus](https://wangdora.rdy.jp/?plugin/VTP) を参照  
 
         ・VOICEROID - https://www.ah-soft.com/voiceroid/  
         （個人的にはここが本ツールの目的）  
@@ -98,7 +98,7 @@ ___
 
 
 4. 棒読みちゃん の設定  
-    - [Voiceroid Talk Plus](https://ch.nicovideo.jp/Wangdora/blomaga/ar126461) のリンクを参照  
+    - [Voiceroid Talk Plus](https://wangdora.rdy.jp/?plugin/VTP) のリンクを参照  
       プラグインの設定項目を変更した後は 棒読みちゃん の再起動を忘れずに  
 
 
